@@ -4,11 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Snake Game</title>
-<style>
-    #gameCanvas {
-        border: 1px solid black;
-    }
-</style>
+<link rel="stylesheet" href="src/css/style.css">
+<script src="src/js/main.js"></script>
 </head>
 <body>
 <canvas id="gameCanvas" width="400" height="400"></canvas>
@@ -21,8 +18,8 @@
     let snakeSegments = [{ x: 20, y: 20 }];
     let direction = 'right';
     let food = { x: 200, y: 200 };
-    let speed = 150; // Start snelheid (in milliseconden tussen updates)
-    let speedIncrement = 10; // Hoeveelheid verhoging van snelheid per segment slang
+    let speed = 150; 
+    let speedIncrement = 5; 
     let lastTime = 0;
 
     function update(currentTime) {
@@ -69,7 +66,6 @@
             }
         }
 
-        // Roep de updatefunctie opnieuw aan
         requestAnimationFrame(update);
     }
 
