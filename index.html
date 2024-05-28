@@ -8,7 +8,7 @@
 <script src="src/js/main.js"></script>
 </head>
 <body>
-<canvas id="gameCanvas" width="400" height="400"></canvas>
+<canvas id="gameCanvas" width="1000" height="600"></canvas>
 
 <script>
     const canvas = document.getElementById('gameCanvas');
@@ -17,11 +17,14 @@
     const segmentSize = 20;
     let snakeSegments = [{ x: 20, y: 20 }];
     let direction = 'right';
-    let food = { x: 200, y: 200 };
+    let food = { x: 500, y: 300 };
+    let bonus = { x: 500, y: 300};
     let speed = 150; 
     let speedIncrement = 5; 
     let lastTime = 0;
 
+    let score = 0;
+    let highScore = 0;
     function update(currentTime) {
         const deltaTime = currentTime - lastTime;
         if (deltaTime > speed) {
@@ -33,13 +36,15 @@
             ctx.fillStyle = 'red';
             ctx.fillRect(food.x, food.y, segmentSize, segmentSize);
 
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(bonus.x, bonus.y, segmentSize, segmentSize);
+
+
             // Teken de slang
             ctx.fillStyle = 'green';
             snakeSegments.forEach(segment => {
                 ctx.fillRect(segment.x, segment.y, segmentSize, segmentSize);
             });
-
-            // Beweeg de slang
             moveSnake();
 
             // Controleer of de slang het voedsel heeft bereikt
@@ -47,8 +52,14 @@
                 // Voeg een segment toe aan de slang
                 snakeSegments.push({});
                 generateFood();
+                score += 100;
                 // Verhoog de snelheid
                 speed -= speedIncrement;
+            }
+
+            if (snakeSegments[0].x === bonus.x && snakeSegments[0].y === bonus.y) {
+                generateBonus();
+                score += 100;
             }
 
             // Controleer op botsingen met de randen van het canvas
@@ -57,7 +68,7 @@
                 return;
             }
 
-            // Controleer op botsingen met de slang zelf
+            // Controleer op botsingen met zichzelf
             for (let i = 1; i < snakeSegments.length; i++) {
                 if (snakeSegments[0].x === snakeSegments[i].x && snakeSegments[0].y === snakeSegments[i].y) {
                     gameOver();
@@ -78,17 +89,21 @@
         if (direction === 'left') head.x -= segmentSize;
         if (direction === 'right') head.x += segmentSize;
 
-        // Voeg de nieuwe kop toe aan het begin van de slang
+        // Voeg de nieuwe kop toe
         snakeSegments.unshift(head);
 
-        // Verwijder het laatste segment van de slang
+        // Verwijder het laatste segment
         snakeSegments.pop();
     }
 
     function generateFood() {
-        // Genereer willekeurige coördinaten voor het voedsel
         food.x = Math.floor(Math.random() * (canvas.width / segmentSize)) * segmentSize;
         food.y = Math.floor(Math.random() * (canvas.height / segmentSize)) * segmentSize;
+    }
+
+    function generateBonus() {
+        bonus.x = Math.floor(Math.random() * (canvas.width / segmentSize)) * segmentSize;
+        bonus.y = Math.floor(Math.random() * (canvas.height / segmentSize)) * segmentSize;
     }
 
     function gameOver() {
@@ -102,14 +117,13 @@
     document.addEventListener('keydown', function(event) {
         const key = event.key;
 
-        // Verander de richting van de slang afhankelijk van de toetsaanslag
+        // Verander de richting van de slang afhankelijk van de toetsen
         if ((key === 'ArrowUp' || key === 'w') && direction !== 'down') direction = 'up';
         if ((key === 'ArrowDown' || key === 's') && direction !== 'up') direction = 'down';
         if ((key === 'ArrowLeft' || key === 'a') && direction !== 'right') direction = 'left';
         if ((key === 'ArrowRight' || key === 'd') && direction !== 'left') direction = 'right';
     });
 
-    // Start de gameloop
     requestAnimationFrame(update);
 </script>
 </body>
