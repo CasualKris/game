@@ -53,12 +53,12 @@
                 snakeSegments.push({});
                 generateFood();
                 score += 100;
+                generateBonus();
                 // Verhoog de snelheid
                 speed -= speedIncrement;
             }
-
+            
             if (snakeSegments[0].x === bonus.x && snakeSegments[0].y === bonus.y) {
-                generateBonus();
                 score += 100;
             }
 
