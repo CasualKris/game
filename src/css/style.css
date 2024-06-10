@@ -7,4 +7,6 @@
 
 #gameCanvas {
     border: 1px solid white;
+    left: 25%;
+    top: 25%;
 }
