@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    position: relative;
+    background-image: url("gra.png");
+}
+
+img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: url('gra.png'); /* Image of the snake */
+    background-size: contain;
+    background-repeat: no-repeat;
+    
+     /* Low opacity for subtle effect */
+}
+
+@keyframes moveSnake {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(80vw, 0); }
+    50% { transform: translate(80vw, 80vh); }
+    75% { transform: translate(0, 80vh); }
+    100% { transform: translate(0, 0); }
+}
+
+.container {
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+header h1 {
+    margin: 0;
+    color: #000000;
+}
+
+.game-info p {
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+.game-options button {
+    background-color: #af4c4c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.game-options button:hover {
+    background-color: #9b960c;
+}
+
+footer p {
+    margin: 20px 0 0;
+    color: #888;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welkom bij Snake</h1>
+        </header>
+        <main>
+            <div class="game-info">
+                <p>Bestuur de slang met de pijltjestoetsen en eet de appels om punten te scoren. Vermijd botsingen met de muur of je eigen staart!</p>
+            </div>
+            <div class="game-options">
+                <button onclick="startGame()">Start Spel</button>
+                <button onclick="showHighScores()">High Scores</button>
+            </div>
+        </main>
+    </div>
+    <script>
+        function startGame() {
+    // Code om het spel te starten
+    alert("Spel gestart! (hier komt je game logica)");
+}
+
+function showInstructions() {
+    alert("Gebruik de pijltjestoetsen om de slang te besturen. Eet de appels om punten te scoren en groei langer. Vermijd botsingen!");
+}
+
+function showHighScores() {
+    alert("High Scores functie komt binnenkort!");
+}
+    </script>
+</body>
+</html>
