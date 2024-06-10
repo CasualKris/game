@@ -18,57 +18,69 @@
     let snakeSegments = [{ x: 20, y: 20 }];
     let direction = 'right';
     let food = { x: 500, y: 300 };
-    let bonus = { x: 500, y: 300};
+    let bonus = null; // Initialize bonus as null
     let speed = 150; 
     let speedIncrement = 5; 
     let lastTime = 0;
 
     let score = 0;
     let highScore = 0;
+    let foodCounter = 0; // Counter for red pellets
+
     function update(currentTime) {
         const deltaTime = currentTime - lastTime;
         if (deltaTime > speed) {
-            lastTime = currentTime;
+            lastTime = currentTime; 
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Teken het voedsel
+            // Draw food
             ctx.fillStyle = 'red';
             ctx.fillRect(food.x, food.y, segmentSize, segmentSize);
 
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(bonus.x, bonus.y, segmentSize, segmentSize);
+            // Draw bonus if it exists
+            if (bonus) {
+                ctx.fillStyle = 'blue';
+                ctx.fillRect(bonus.x, bonus.y, segmentSize, segmentSize);
+            }
 
-
-            // Teken de slang
+            // Draw the snake
             ctx.fillStyle = 'green';
             snakeSegments.forEach(segment => {
                 ctx.fillRect(segment.x, segment.y, segmentSize, segmentSize);
             });
             moveSnake();
 
-            // Controleer of de slang het voedsel heeft bereikt
+            // Check if the snake reaches the food
             if (snakeSegments[0].x === food.x && snakeSegments[0].y === food.y) {
-                // Voeg een segment toe aan de slang
+                // Add a segment to the snake
                 snakeSegments.push({});
                 generateFood();
                 score += 100;
-                generateBonus();
-                // Verhoog de snelheid
+
+                // Increase the food counter and generate bonus if conditions are met
+                foodCounter++;
+                if (foodCounter >= 3 && foodCounter % 2 === 1) {
+                    generateBonus();
+                }
+
+                // Increase the speed
                 speed -= speedIncrement;
             }
-            
-            if (snakeSegments[0].x === bonus.x && snakeSegments[0].y === bonus.y) {
+
+            // Check if the snake reaches the bonus
+            if (bonus && snakeSegments[0].x === bonus.x && snakeSegments[0].y === bonus.y) {
                 score += 100;
+                bonus = null; // Remove the bonus after collecting
             }
 
-            // Controleer op botsingen met de randen van het canvas
+            // Check for collisions with the canvas borders
             if (snakeSegments[0].x < 0 || snakeSegments[0].x >= canvas.width || snakeSegments[0].y < 0 || snakeSegments[0].y >= canvas.height) {
                 gameOver();
                 return;
             }
 
-            // Controleer op botsingen met zichzelf
+            // Check for collisions with itself
             for (let i = 1; i < snakeSegments.length; i++) {
                 if (snakeSegments[0].x === snakeSegments[i].x && snakeSegments[0].y === snakeSegments[i].y) {
                     gameOver();
@@ -83,16 +95,16 @@
     function moveSnake() {
         const head = { x: snakeSegments[0].x, y: snakeSegments[0].y };
 
-        // Beweeg de kop in de juiste richting
+        // Move the head in the appropriate direction
         if (direction === 'up') head.y -= segmentSize;
         if (direction === 'down') head.y += segmentSize;
         if (direction === 'left') head.x -= segmentSize;
         if (direction === 'right') head.x += segmentSize;
 
-        // Voeg de nieuwe kop toe
+        // Maak aan nieuw hoofd
         snakeSegments.unshift(head);
 
-        // Verwijder het laatste segment
+        // Verwijder staart
         snakeSegments.pop();
     }
 
@@ -102,8 +114,10 @@
     }
 
     function generateBonus() {
-        bonus.x = Math.floor(Math.random() * (canvas.width / segmentSize)) * segmentSize;
-        bonus.y = Math.floor(Math.random() * (canvas.height / segmentSize)) * segmentSize;
+        bonus = {
+            x: Math.floor(Math.random() * (canvas.width / segmentSize)) * segmentSize,
+            y: Math.floor(Math.random() * (canvas.height / segmentSize)) * segmentSize
+        };
     }
 
     function gameOver() {
@@ -117,7 +131,7 @@
     document.addEventListener('keydown', function(event) {
         const key = event.key;
 
-        // Verander de richting van de slang afhankelijk van de toetsen
+        // Verander richting slang
         if ((key === 'ArrowUp' || key === 'w') && direction !== 'down') direction = 'up';
         if ((key === 'ArrowDown' || key === 's') && direction !== 'up') direction = 'down';
         if ((key === 'ArrowLeft' || key === 'a') && direction !== 'right') direction = 'left';
