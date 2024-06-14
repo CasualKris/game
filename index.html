@@ -1,13 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Snake Game</title>
-        <link rel="stylesheet" href="src/css/style.css">
-    </head>
-    <body>
-        <canvas id="gameCanvas" width="1000" height="600"></canvas>
-        <script src="src/js/script.js"></script>
-    </body>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welkom bij Snake</h1>
+        </header>
+        <main>
+            <div class="game-info">
+                <p>Bestuur de slang met de pijltjestoetsen en eet de appels om punten te scoren. Vermijd botsingen met de muur of je eigen staart!</p>
+            </div>
+            <div class="game-options">
+                <button onclick="startGame()">Start Spel</button>
+                <button onclick="showHighScores()">High Scores</button>
+            </div>
+        </main>
+    </div>
+    <script>
+        function startGame() {
+            document.querySelector('.container').style.display = 'none';
+            document.getElementById('gameCanvas').style.display = 'block';
+            initGame(); // Initialize and start the game loop
+        }
+
+        function showInstructions() {
+            alert("Gebruik de pijltjestoetsen om de slang te besturen. Eet de appels om punten te scoren en groei langer. Vermijd botsingen!");
+        }
+
+        function showHighScores() {
+            alert("High Scores functie komt binnenkort!");
+        }
+    </script>
+    <canvas id="gameCanvas" width="1000" height="600"></canvas>
+    <script src="src/js/script.js"></script>
+</body>
 </html>

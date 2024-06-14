@@ -14,6 +14,10 @@ let score = 0;
 let highScore = 0;
 let foodCounter = 0; // Counter for red pellets
 
+function initGame() {
+    requestAnimationFrame(update);
+}
+
 function update(currentTime) {
     const deltaTime = currentTime - lastTime;
     if (deltaTime > speed) {
@@ -50,30 +54,33 @@ function update(currentTime) {
             if (foodCounter >= 3 && foodCounter % 2 === 1) {
                 generateBonus();
             }
-
-            // Increase the speed
             speed -= speedIncrement;
         }
 
-        // Check if the snake reaches the bonus
+        // Bonus
         if (bonus && snakeSegments[0].x === bonus.x && snakeSegments[0].y === bonus.y) {
             score += 100;
-            bonus = null; // Remove the bonus after collecting
+            bonus = null; // Verwijder bonus
         }
 
-        // Check for collisions with the canvas borders
+        // Botsingen met rand
         if (snakeSegments[0].x < 0 || snakeSegments[0].x >= canvas.width || snakeSegments[0].y < 0 || snakeSegments[0].y >= canvas.height) {
             gameOver();
             return;
         }
 
-        // Check for collisions with itself
+        // Kijk voor botsingen met zelf
         for (let i = 1; i < snakeSegments.length; i++) {
             if (snakeSegments[0].x === snakeSegments[i].x && snakeSegments[0].y === snakeSegments[i].y) {
                 gameOver();
                 return;
             }
         }
+
+        ctx.font = "20px Arial";
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'right';
+        ctx.fillText("Score: " + score, canvas.width - 10, canvas.height - 10);
     }
 
     requestAnimationFrame(update);

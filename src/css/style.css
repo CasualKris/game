@@ -2,11 +2,76 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    background-color: black;
+    background-color: white;
 }
 
 #gameCanvas {
+    background-color: black;
     border: 1px solid white;
     left: 25%;
     top: 25%;
+    display: none;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    position: relative;
+    background-image: url("gra.png");
+}
+
+img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: url('gra.png'); /* Image of the snake */
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.container {
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+
+header h1 {
+    margin: 0;
+    color: #000000;
+}
+
+.game-info p {
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+.game-options button {
+    background-color: #af4c4c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.game-options button:hover {
+    background-color: #9b960c;
+}
+
+footer p {
+    margin: 20px 0 0;
+    color: #888;
 }
