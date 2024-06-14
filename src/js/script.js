@@ -5,14 +5,14 @@ const segmentSize = 20;
 let snakeSegments = [{ x: 20, y: 20 }];
 let direction = 'right';
 let food = { x: 500, y: 300 };
-let bonus = null; // Initialize bonus as null
+let bonus = null; // Bonus verschijnt nog niet
 let speed = 150; 
 let speedIncrement = 5; 
 let lastTime = 0;
 
 let score = 0;
 let highScore = 0;
-let foodCounter = 0; // Counter for red pellets
+let foodCounter = 0; // Teller voor rode pellets
 
 function initGame() {
     requestAnimationFrame(update);
@@ -25,31 +25,28 @@ function update(currentTime) {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw food
+        // Teken voedsel
         ctx.fillStyle = 'red';
         ctx.fillRect(food.x, food.y, segmentSize, segmentSize);
 
-        // Draw bonus if it exists
+        // Teken bonus
         if (bonus) {
             ctx.fillStyle = 'blue';
             ctx.fillRect(bonus.x, bonus.y, segmentSize, segmentSize);
         }
 
-        // Draw the snake
-        ctx.fillStyle = 'green';
-        snakeSegments.forEach(segment => {
-            ctx.fillRect(segment.x, segment.y, segmentSize, segmentSize);
-        });
+        // Teken de slang
+        drawSnake();
         moveSnake();
 
-        // Check if the snake reaches the food
+        // Controleer of de slang het voedsel heeft bereikt
         if (snakeSegments[0].x === food.x && snakeSegments[0].y === food.y) {
-            // Add a segment to the snake
+            // Voeg een segment toe aan de slang
             snakeSegments.push({});
             generateFood();
             score += 100;
 
-            // Increase the food counter and generate bonus if conditions are met
+            // Voedsel teller + geeft bonus
             foodCounter++;
             if (foodCounter >= 3 && foodCounter % 2 === 1) {
                 generateBonus();
@@ -63,13 +60,13 @@ function update(currentTime) {
             bonus = null; // Verwijder bonus
         }
 
-        // Botsingen met rand
+        // Controleer op botsingen met rand
         if (snakeSegments[0].x < 0 || snakeSegments[0].x >= canvas.width || snakeSegments[0].y < 0 || snakeSegments[0].y >= canvas.height) {
             gameOver();
             return;
         }
 
-        // Kijk voor botsingen met zelf
+        // Controleer op botsingen met zichzelf
         for (let i = 1; i < snakeSegments.length; i++) {
             if (snakeSegments[0].x === snakeSegments[i].x && snakeSegments[0].y === snakeSegments[i].y) {
                 gameOver();
@@ -77,6 +74,7 @@ function update(currentTime) {
             }
         }
 
+        // Tekst voor score
         ctx.font = "20px Arial";
         ctx.fillStyle = 'white';
         ctx.textAlign = 'right';
@@ -86,6 +84,45 @@ function update(currentTime) {
     requestAnimationFrame(update);
 }
 
+function drawSnake() {
+    snakeSegments.forEach((segment, index) => {
+        if (index === 0) {
+            // Teken het hoofd met een oog
+            ctx.fillStyle = 'green';
+            ctx.fillRect(segment.x, segment.y, segmentSize, segmentSize);
+            drawEye(segment.x, segment.y);
+        } else {
+            // Teken de rest van het lichaam
+            ctx.fillStyle = 'green';
+            ctx.fillRect(segment.x, segment.y, segmentSize, segmentSize);
+        }
+    });
+}
+
+function drawEye(x, y) {
+    ctx.fillStyle = 'red';
+    const eyeRadius = 3; // Straal van het oog
+    let eyeX, eyeY;
+
+    if (direction === 'up') {
+        eyeX = x + segmentSize / 2;
+        eyeY = y + segmentSize / 4;
+    } else if (direction === 'down') {
+        eyeX = x + segmentSize / 2;
+        eyeY = y + (3 * segmentSize) / 4;
+    } else if (direction === 'left') {
+        eyeX = x + segmentSize / 4;
+        eyeY = y + segmentSize / 2;
+    } else if (direction === 'right') {
+        eyeX = x + (3 * segmentSize) / 4;
+        eyeY = y + segmentSize / 2;
+    }
+
+    ctx.beginPath();
+    ctx.arc(eyeX, eyeY, eyeRadius, 0, 2 * Math.PI);
+    ctx.fill();
+}
+
 function moveSnake() {
     const head = { x: snakeSegments[0].x, y: snakeSegments[0].y };
     if (direction === 'up') head.y -= segmentSize;
@@ -93,7 +130,7 @@ function moveSnake() {
     if (direction === 'left') head.x -= segmentSize;
     if (direction === 'right') head.x += segmentSize;
 
-    // Maak aan nieuw hoofd
+    // Voeg nieuw hoofd toe
     snakeSegments.unshift(head);
 
     // Verwijder staart
@@ -113,17 +150,15 @@ function generateBonus() {
 }
 
 function gameOver() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.font = "30px Arial";
-    ctx.fillStyle = 'red';
-    ctx.textAlign = 'center';
-    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
+    highScore = score;
+    addHighScoreToStorage(playerName, highScore);
+    window.location.href = 'highscores.html';
 }
 
 document.addEventListener('keydown', function(event) {
     const key = event.key;
 
-    // Verander richting slang
+    // Verander richting van de slang
     if ((key === 'ArrowUp' || key === 'w') && direction !== 'down') direction = 'up';
     if ((key === 'ArrowDown' || key === 's') && direction !== 'up') direction = 'down';
     if ((key === 'ArrowLeft' || key === 'a') && direction !== 'right') direction = 'left';

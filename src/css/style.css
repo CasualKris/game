@@ -23,7 +23,7 @@ body {
     background-color: #f0f0f0;
     overflow: hidden;
     position: relative;
-    background-image: url("gra.png");
+    background-image: url("../img/gra.png");
 }
 
 img {
