@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -17,6 +16,8 @@
                 <p>Bestuur de slang met de pijltjestoetsen en eet de appels om punten te scoren. Vermijd botsingen met de muur of je eigen staart!</p>
             </div>
             <div class="game-options">
+                <label for="playerName">Vul je naam in:</label>
+                <input type="text" id="playerName" name="playerName" placeholder="Je naam...">
                 <button onclick="startGame()">Start Spel</button>
                 <button onclick="showHighScores()">High Scores</button>
             </div>
@@ -24,6 +25,12 @@
     </div>
     <script>
         function startGame() {
+            const playerName = document.getElementById('playerName').value;
+            if (!playerName) {
+                alert('Vul je naam in voordat je het spel start.');
+                return;
+            }
+
             document.querySelector('.container').style.display = 'none';
             document.getElementById('gameCanvas').style.display = 'block';
             initGame(); // Start Loop
@@ -34,10 +41,10 @@
         }
 
         function showHighScores() {
-            alert("High Scores functie komt binnenkort!");
+            window.location.href = 'leaderboard.html';
         }
     </script>
-    <canvas id="gameCanvas" width="1000" height="600"></canvas>
+    <canvas id="gameCanvas" width="1000" height="600" style="display:none;"></canvas>
     <script src="src/js/script.js"></script>
 </body>
 </html>

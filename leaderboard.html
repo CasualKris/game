@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Scores</title>
+    <link rel="stylesheet" href="src/css/leaderboard.css">
+</head>
+<body>
+    <h1>High Scores</h1>
+    <table id="highScoresTable">
+        <!-- Highscores hier getoont -->
+    </table>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('php/highscores.php') // Hier het pad naar php/highscores.php
+                .then(response => response.json())
+                .then(data => {
+                    const highScoresTable = document.getElementById('highScoresTable');
+                    data.forEach(score => {
+                        const row = highScoresTable.insertRow();
+                        const playerNameCell = row.insertCell();
+                        const scoreCell = row.insertCell();
+                        playerNameCell.textContent = score.playerName;
+                        scoreCell.textContent = score.score;
+                    });
+                })
+                .catch(error => console.error('Error fetching high scores:', error));
+        });
+    </script>
+</body>
+</html>

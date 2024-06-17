@@ -5,14 +5,31 @@ const segmentSize = 20;
 let snakeSegments = [{ x: 20, y: 20 }];
 let direction = 'right';
 let food = { x: 500, y: 300 };
-let bonus = null; // Bonus verschijnt nog niet
+let bonus = null;
 let speed = 150; 
 let speedIncrement = 5; 
 let lastTime = 0;
 
 let score = 0;
-let highScore = 0;
-let foodCounter = 0; // Teller voor rode pellets
+
+function addHighScoreToServer(playerName, score) {
+    fetch('highscores.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `playerName=${encodeURIComponent(playerName)}&score=${encodeURIComponent(score)}`,
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('High score added:', data);
+        window.location.href = 'leaderboard.html';
+    })
+    .catch(error => {
+        console.error('Error adding high score:', error);
+        window.location.href = 'leaderboard.html'; // Redirect to leaderboard even if there is an error
+    });
+}
 
 function initGame() {
     requestAnimationFrame(update);
@@ -21,52 +38,39 @@ function initGame() {
 function update(currentTime) {
     const deltaTime = currentTime - lastTime;
     if (deltaTime > speed) {
-        lastTime = currentTime; 
+        lastTime = currentTime;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Teken voedsel
         ctx.fillStyle = 'red';
         ctx.fillRect(food.x, food.y, segmentSize, segmentSize);
 
-        // Teken bonus
         if (bonus) {
             ctx.fillStyle = 'blue';
             ctx.fillRect(bonus.x, bonus.y, segmentSize, segmentSize);
         }
 
-        // Teken de slang
         drawSnake();
         moveSnake();
 
-        // Controleer of de slang het voedsel heeft bereikt
         if (snakeSegments[0].x === food.x && snakeSegments[0].y === food.y) {
-            // Voeg een segment toe aan de slang
             snakeSegments.push({});
             generateFood();
             score += 100;
 
-            // Voedsel teller + geeft bonus
-            foodCounter++;
-            if (foodCounter >= 3 && foodCounter % 2 === 1) {
-                generateBonus();
-            }
             speed -= speedIncrement;
         }
 
-        // Bonus
         if (bonus && snakeSegments[0].x === bonus.x && snakeSegments[0].y === bonus.y) {
             score += 100;
-            bonus = null; // Verwijder bonus
+            bonus = null;
         }
 
-        // Controleer op botsingen met rand
         if (snakeSegments[0].x < 0 || snakeSegments[0].x >= canvas.width || snakeSegments[0].y < 0 || snakeSegments[0].y >= canvas.height) {
             gameOver();
             return;
         }
 
-        // Controleer op botsingen met zichzelf
         for (let i = 1; i < snakeSegments.length; i++) {
             if (snakeSegments[0].x === snakeSegments[i].x && snakeSegments[0].y === snakeSegments[i].y) {
                 gameOver();
@@ -74,7 +78,6 @@ function update(currentTime) {
             }
         }
 
-        // Tekst voor score
         ctx.font = "20px Arial";
         ctx.fillStyle = 'white';
         ctx.textAlign = 'right';
@@ -87,12 +90,10 @@ function update(currentTime) {
 function drawSnake() {
     snakeSegments.forEach((segment, index) => {
         if (index === 0) {
-            // Teken het hoofd met een oog
             ctx.fillStyle = 'green';
             ctx.fillRect(segment.x, segment.y, segmentSize, segmentSize);
             drawEye(segment.x, segment.y);
         } else {
-            // Teken de rest van het lichaam
             ctx.fillStyle = 'green';
             ctx.fillRect(segment.x, segment.y, segmentSize, segmentSize);
         }
@@ -101,7 +102,7 @@ function drawSnake() {
 
 function drawEye(x, y) {
     ctx.fillStyle = 'red';
-    const eyeRadius = 3; // Straal van het oog
+    const eyeRadius = 3;
     let eyeX, eyeY;
 
     if (direction === 'up') {
@@ -130,10 +131,7 @@ function moveSnake() {
     if (direction === 'left') head.x -= segmentSize;
     if (direction === 'right') head.x += segmentSize;
 
-    // Voeg nieuw hoofd toe
     snakeSegments.unshift(head);
-
-    // Verwijder staart
     snakeSegments.pop();
 }
 
@@ -142,23 +140,14 @@ function generateFood() {
     food.y = Math.floor(Math.random() * (canvas.height / segmentSize)) * segmentSize;
 }
 
-function generateBonus() {
-    bonus = {
-        x: Math.floor(Math.random() * (canvas.width / segmentSize)) * segmentSize,
-        y: Math.floor(Math.random() * (canvas.height / segmentSize)) * segmentSize
-    };
-}
-
 function gameOver() {
-    highScore = score;
-    addHighScoreToStorage(playerName, highScore);
-    window.location.href = 'highscores.html';
+    const playerName = document.getElementById('playerName').value;
+    addHighScoreToServer(playerName, score);
 }
 
 document.addEventListener('keydown', function(event) {
     const key = event.key;
 
-    // Verander richting van de slang
     if ((key === 'ArrowUp' || key === 'w') && direction !== 'down') direction = 'up';
     if ((key === 'ArrowDown' || key === 's') && direction !== 'up') direction = 'down';
     if ((key === 'ArrowLeft' || key === 'a') && direction !== 'right') direction = 'left';

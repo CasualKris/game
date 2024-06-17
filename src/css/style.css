@@ -6,7 +6,7 @@
 }
 
 #gameCanvas {
-    background-color: black;
+    background-color: rgb(100, 78, 37);
     border: 1px solid white;
     left: 25%;
     top: 25%;
